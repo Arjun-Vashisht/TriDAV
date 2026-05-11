@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero -->
+<section class="py-12 md:py-20 bg-cream-100">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="text-center mb-12">
+      <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Textile Knowledge Hub</p>
+      <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal-900 mb-4">Blog & Resources</h1>
+      <p class="text-gray-500 max-w-xl mx-auto">Expert guides on home textiles, hotel bedding, thread count, GSM, order tips and buying guides for B2B buyers.</p>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    {% if categories %}
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+      <a href="{% url 'blog:list' %}" class="px-5 py-2 rounded-full text-sm font-medium transition-colors {% if not active_category %}bg-sand-600 text-white{% else %}bg-white border border-cream-300 text-gray-600 hover:border-sand-400{% endif %}">All</a>
+      {% for cat in categories %}
+      <a href="?category={{ cat.slug }}" class="px-5 py-2 rounded-full text-sm font-medium transition-colors {% if active_category == cat %}bg-sand-600 text-white{% else %}bg-white border border-cream-300 text-gray-600 hover:border-sand-400{% endif %}">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="py-10 md:py-14 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    <!-- Featured Post -->
+    {% if featured_post and not active_category %}
+    <div class="mb-14">
+      <a href="{{ featured_post.get_absolute_url }}" class="group grid lg:grid-cols-2 gap-8 bg-cream-50 rounded-2xl overflow-hidden border border-cream-200 hover:border-sand-300 hover:shadow-xl transition-all duration-300">
+        <div class="aspect-[16/9] lg:aspect-auto bg-gradient-to-br from-cream-200 to-cream-400 overflow-hidden min-h-[280px]">
+          {% if featured_post.featured_image %}
+          <img src="{{ featured_post.featured_image.url }}" alt="{{ featured_post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" />
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center"><span class="text-7xl">📝</span></div>
+          {% endif %}
+        </div>
+        <div class="p-8 lg:py-12 flex flex-col justify-center">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="bg-sand-100 text-sand-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Featured</span>
+            {% if featured_post.category %}<span class="text-xs text-gray-400">{{ featured_post.category.name }}</span>{% endif %}
+          </div>
+          <h2 class="font-serif text-3xl font-bold text-charcoal-900 mb-3 group-hover:text-sand-700 transition-colors">{{ featured_post.title }}</h2>
+          <p class="text-gray-500 leading-relaxed mb-5">{{ featured_post.excerpt }}</p>
+          <div class="flex items-center justify-between text-xs text-gray-400">
+            <span>{{ featured_post.published_at|date:"d M Y" }}</span>
+            <span>{{ featured_post.read_time }} min read</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endif %}
+
+    <!-- Post Grid -->
+    {% if posts %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+      {% for post in posts %}
+      <a href="{{ post.get_absolute_url }}" class="group bg-white rounded-2xl overflow-hidden border border-cream-200 hover:border-sand-300 hover:shadow-lg transition-all duration-300 reveal">
+        <div class="aspect-[16/9] bg-gradient-to-br from-cream-100 to-cream-300 overflow-hidden">
+          {% if post.featured_image %}
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center"><span class="text-4xl">📝</span></div>
+          {% endif %}
+        </div>
+        <div class="p-6">
+          {% if post.category %}
+          <span class="text-xs text-sand-600 font-semibold uppercase tracking-wide">{{ post.category.name }}</span>
+          {% endif %}
+          <h3 class="font-serif text-xl font-semibold text-charcoal-900 mt-2 mb-3 line-clamp-2 group-hover:text-sand-700 transition-colors">{{ post.title }}</h3>
+          <p class="text-sm text-gray-500 line-clamp-3 mb-4 leading-relaxed">{{ post.excerpt }}</p>
+          <div class="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-cream-100">
+            <span>{{ post.published_at|date:"d M Y" }}</span>
+            <span>{{ post.read_time }} min read</span>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if posts.has_other_pages %}
+    <div class="mt-12 flex justify-center gap-2">
+      {% if posts.has_previous %}
+      <a href="?page={{ posts.previous_page_number }}" class="px-5 py-2.5 bg-white border border-cream-300 text-sm rounded-xl hover:border-sand-400 transition-colors">← Previous</a>
+      {% endif %}
+      {% for num in posts.paginator.page_range %}
+      <a href="?page={{ num }}" class="px-4 py-2.5 text-sm rounded-xl {% if posts.number == num %}bg-sand-600 text-white{% else %}bg-white border border-cream-300 hover:border-sand-400{% endif %} transition-colors">{{ num }}</a>
+      {% endfor %}
+      {% if posts.has_next %}
+      <a href="?page={{ posts.next_page_number }}" class="px-5 py-2.5 bg-white border border-cream-300 text-sm rounded-xl hover:border-sand-400 transition-colors">Next →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-20">
+      <span class="text-5xl block mb-4">📝</span>
+      <p class="text-lg text-gray-500">No posts yet. Check back soon!</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

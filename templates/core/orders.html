@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-14 md:py-24 bg-charcoal-900 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: url('{% static "images/pattern-weave.svg" %}'); background-size: 200px;"></div>
+  <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
+    <p class="text-sand-400 text-xs font-semibold uppercase tracking-widest mb-4">Global Orders</p>
+    <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5">Bulk Orders &<br /><span class="text-sand-400 italic">Order Services</span></h1>
+    <p class="text-gray-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">We manage the full order process — from order confirmation and quality inspection through to documentation and international dispatch.</p>
+    <div class="flex flex-wrap gap-4 justify-center mt-8">
+      <a href="{% url 'inquiries:bulk' %}" class="bg-sand-600 text-white font-bold px-8 py-4 rounded-full hover:bg-sand-500 transition-colors">Request Bulk Quote</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 md:py-20 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="text-center mb-14 reveal">
+      <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Simple Process</p>
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-charcoal-900">How Our Orders Work</h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for num, title, desc in order_steps %}
+      <div class="text-center reveal">
+        <div class="w-14 h-14 bg-sand-600 text-white rounded-2xl flex items-center justify-center font-bold text-xl mx-auto mb-4 shadow-lg">{{ num }}</div>
+        <h3 class="font-semibold text-charcoal-900 mb-2">{{ title }}</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-12 md:py-20 bg-cream-100">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="text-center mb-12 reveal">
+      <h2 class="font-serif text-3xl md:text-4xl font-bold text-charcoal-900">Minimum Order Quantities</h2>
+      <p class="text-gray-500 mt-2 text-sm md:text-base">Starting quantities suited to both initial test orders and established bulk buyers.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      {% for name, qty, desc, bg_class in moq_tiers %}
+      <div class="{{ bg_class }} border border-cream-300 rounded-2xl p-8 text-center hover:shadow-lg transition-shadow reveal">
+        <h3 class="font-serif text-2xl font-bold text-charcoal-900 mb-2">{{ name }}</h3>
+        <div class="font-serif text-4xl font-bold text-sand-600 my-4">{{ qty }}</div>
+        <p class="text-sm text-gray-500 leading-relaxed mb-6">{{ desc }}</p>
+        <a href="{% url 'inquiries:bulk' %}" class="inline-flex items-center gap-2 bg-sand-600 text-white font-semibold px-6 py-3 rounded-full hover:bg-sand-700 transition-colors text-sm">Get Quote</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-12 md:py-20 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+      <div class="reveal">
+        <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Logistics</p>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-charcoal-900 mb-6">Shipping & Documentation</h2>
+        <p class="text-gray-600 leading-relaxed mb-8">We ship pan-India and internationally.</p>
+        <div class="space-y-4">
+          {% for item in shipping_items %}
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-sand-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm text-charcoal-800">{{ item }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 class="font-semibold text-charcoal-900 mb-5 text-lg">Countries We Ship To</h3>
+        <div class="flex flex-wrap gap-2">
+          {% if countries %}
+          {% for country in countries %}
+          <span class="text-sm bg-cream-100 border border-cream-300 px-3 py-1.5 rounded-full text-charcoal-800">{{ country.flag_emoji }} {{ country.name }}</span>
+          {% endfor %}
+          {% else %}
+          {% for country in default_countries %}
+          <span class="text-sm bg-cream-100 border border-cream-300 px-3 py-1.5 rounded-full text-charcoal-800">{{ country }}</span>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-12 md:py-20 bg-cream-100">
+  <div class="container mx-auto px-4 lg:px-8 text-center">
+    <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Private Label</p>
+    <h2 class="font-serif text-3xl md:text-4xl font-bold text-charcoal-900 mb-4">Custom Branding Available</h2>
+    <p class="text-gray-500 max-w-xl mx-auto mb-10">Custom labels, colours, and packaging available on selected product categories. Suitable for retail brands, hotel chains, and institutional buyers.</p>
+    <div class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+      {% for icon, title, desc in custom_branding %}
+      <div class="bg-white rounded-2xl border border-cream-200 p-6 hover:shadow-md transition-shadow">
+        <div class="text-3xl mb-3">{{ icon }}</div>
+        <h3 class="font-semibold text-charcoal-900 mb-1">{{ title }}</h3>
+        <p class="text-xs text-gray-500">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{% url 'inquiries:bulk' %}" class="mt-10 inline-flex items-center gap-2 bg-sand-600 text-white font-bold px-10 py-4 rounded-full hover:bg-sand-700 transition-colors">Discuss Custom Branding</a>
+  </div>
+</section>
+{% endblock %}

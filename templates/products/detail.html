@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block schema %}
+{% if schema_product %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name }}",
+  "description": "{{ product.short_description|default:product.description|truncatechars:200 }}",
+  "sku": "{{ product.sku }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "TriDAV Impex"
+  },
+  "offers": {
+    "@type": "Offer",
+    "availability": "https://schema.org/InStock",
+    "priceCurrency": "USD",
+    "seller": {
+      "@type": "Organization",
+      "name": "TriDAV Impex"
+    }
+  }
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav class="bg-cream-100 border-b border-cream-200 py-4">
+  <div class="container mx-auto px-4 lg:px-8 flex items-center gap-2 text-sm text-gray-400">
+    <a href="{% url 'core:home' %}" class="hover:text-sand-600">Home</a>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <a href="{{ product.category.get_absolute_url }}" class="hover:text-sand-600">{{ product.category.name }}</a>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <span class="text-charcoal-800 line-clamp-1">{{ product.name }}</span>
+  </div>
+</nav>
+
+<!-- Product Section -->
+<section class="py-8 md:py-14 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+
+      <!-- Left: Image Gallery -->
+      <div>
+        <!-- Main Image with Zoom -->
+        <div class="aspect-square rounded-2xl overflow-hidden bg-cream-100 border border-cream-200 mb-4 relative group" id="main-image-wrap">
+          {% if product.primary_image %}
+          <img id="main-product-image" src="{{ product.primary_image.image.url }}" alt="{{ product.name }}"
+               class="w-full h-full object-cover cursor-zoom-in transition-transform duration-300 group-hover:scale-110"
+               loading="eager" />
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center">
+            <span class="text-7xl">🏷️</span>
+          </div>
+          {% endif %}
+          {% if product.is_bestseller %}
+          <div class="absolute top-4 left-4">
+            <span class="bg-sand-600 text-white text-xs font-bold px-3 py-1.5 rounded-full">Best Seller</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Thumbnails -->
+        {% if product.images.count > 1 %}
+        <div class="flex gap-3 overflow-x-auto pb-2">
+          {% for image in product.images.all %}
+          <button onclick="changeImage('{{ image.image.url }}', this)"
+                  class="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 {% if forloop.first %}border-sand-400{% else %}border-cream-200{% endif %} hover:border-sand-400 transition-colors">
+            <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}"
+                 class="w-full h-full object-cover" loading="lazy" />
+          </button>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Right: Product Info -->
+      <div>
+        <!-- Category + Badges -->
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <a href="{{ product.category.get_absolute_url }}" class="text-xs text-sand-600 font-semibold uppercase tracking-widest hover:text-sand-700">
+            {{ product.category.name }}
+          </a>
+          {% if product.is_new %}<span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">New Arrival</span>{% endif %}
+          {% if product.is_bestseller %}<span class="bg-sand-100 text-sand-700 text-xs font-bold px-2 py-1 rounded-full">Best Seller</span>{% endif %}
+          <span class="bg-orange-50 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">🇮🇳 Made in India</span>
+        </div>
+
+        <h1 class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-charcoal-900 mb-3 leading-snug">{{ product.name }}</h1>
+
+        {% if product.price_range %}
+        <div class="flex items-center gap-3 mb-4">
+          <span class="font-serif text-2xl font-semibold text-sand-700">{{ product.price_range }}</span>
+          <span class="text-xs text-gray-400">per piece (FOB)</span>
+        </div>
+        {% endif %}
+
+        {% if product.short_description %}
+        <p class="text-gray-600 leading-relaxed mb-6">{{ product.short_description }}</p>
+        {% endif %}
+
+        <!-- Specs Table -->
+        <div class="bg-cream-50 rounded-2xl border border-cream-200 p-5 mb-6">
+          <h3 class="font-semibold text-charcoal-900 text-sm mb-4">Product Specifications</h3>
+          <dl class="grid grid-cols-2 gap-3">
+            {% if product.material %}
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">Material</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.material }}</dd>
+            </div>
+            {% endif %}
+            {% if product.gsm %}
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">GSM</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.gsm }} g/m²</dd>
+            </div>
+            {% endif %}
+            {% if product.thread_count %}
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">Thread Count</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.thread_count }}TC</dd>
+            </div>
+            {% endif %}
+            {% if product.size %}
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">Available Sizes</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.size }}</dd>
+            </div>
+            {% endif %}
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">Usage</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.get_usage_display }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-gray-400 uppercase tracking-wide">SKU</dt>
+              <dd class="text-sm font-medium text-charcoal-900 mt-0.5">{{ product.sku }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- MOQ Info -->
+        <div class="flex items-center gap-4 bg-sand-50 border border-sand-200 rounded-xl px-5 py-4 mb-6">
+          <svg class="w-8 h-8 text-sand-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <div>
+            <div class="font-semibold text-charcoal-900">Minimum Order: {{ product.moq }} pieces</div>
+            <div class="text-xs text-gray-500 mt-0.5">Custom quantities available. Contact us for bulk pricing.</div>
+          </div>
+        </div>
+
+        <!-- Color Options -->
+        {% if product.color_options %}
+        <div class="mb-6">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-2">Available Colors</p>
+          <div class="flex flex-wrap gap-2">
+            {% for color in product.color_options|split:"," %}
+            <span class="text-xs bg-cream-100 border border-cream-300 px-3 py-1.5 rounded-full text-charcoal-800">{{ color|trim }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Tags -->
+        {% if product.tags.all %}
+        <div class="flex flex-wrap gap-2 mb-6">
+          {% for tag in product.tags.all %}
+          <span class="text-xs bg-cream-100 text-gray-600 px-3 py-1 rounded-full">#{{ tag.name }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="{% url 'inquiries:bulk' %}?category={{ product.category.name }}&product={{ product.name }}"
+             class="flex-1 flex items-center justify-center gap-2 bg-sand-600 text-white font-semibold px-6 py-4 rounded-full hover:bg-sand-700 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            Request Bulk Quote
+          </a>
+          <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%2C%20I%20am%20interested%20in%20{{ product.name|urlencode }}"
+             target="_blank" rel="noopener"
+             class="flex items-center justify-center gap-2 bg-green-600 text-white font-semibold px-6 py-4 rounded-full hover:bg-green-700 transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="flex flex-wrap gap-4 mt-5 pt-5 border-t border-cream-200">
+          {% for item in trust_signals %}
+          <span class="text-xs text-gray-500">{{ item }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Description -->
+    {% if product.description %}
+    <div class="mt-14 border-t border-cream-200 pt-10">
+      <h2 class="font-serif text-2xl font-bold text-charcoal-900 mb-6">Product Details</h2>
+      <div class="prose prose-lg max-w-3xl text-gray-600 leading-relaxed">
+        {{ product.description|linebreaks }}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Related Products -->
+    {% if recommended %}
+    <div class="mt-14">
+      <h2 class="font-serif text-2xl font-bold text-charcoal-900 mb-7">You May Also Like</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+        {% for p in recommended %}
+        <a href="{{ p.get_absolute_url }}" class="group bg-cream-50 rounded-2xl overflow-hidden border border-cream-200 hover:border-sand-300 hover:shadow-md transition-all duration-200">
+          <div class="aspect-square bg-cream-200 overflow-hidden">
+            {% if p.primary_image %}
+            <img src="{{ p.primary_image.image.url }}" alt="{{ p.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center"><span class="text-3xl">🏷️</span></div>
+            {% endif %}
+          </div>
+          <div class="p-3">
+            <p class="text-xs text-sand-600 font-medium mb-1">{{ p.category.name }}</p>
+            <h4 class="text-sm font-semibold text-charcoal-900 line-clamp-2 group-hover:text-sand-700 transition-colors">{{ p.name }}</h4>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function changeImage(url, btn) {
+  document.getElementById('main-product-image').src = url;
+  document.querySelectorAll('.thumbnail-btn').forEach(b => b.classList.remove('border-sand-400'));
+  btn.classList.add('border-sand-400');
+}
+</script>
+{% endblock %}

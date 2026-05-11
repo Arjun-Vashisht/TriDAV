@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<!-- Hero -->
+<section class="py-14 md:py-24 bg-gradient-to-br from-cream-50 to-cream-200 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-20" style="background-image: url('{% static "images/pattern-weave.svg" %}'); background-size: 200px;"></div>
+  <div class="container mx-auto px-4 lg:px-8 relative z-10">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 bg-sand-100 text-sand-700 text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-6">
+        <span class="w-2 h-2 bg-sand-500 rounded-full"></span>
+        TriDAV Impex · Made in India
+      </div>
+      <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-charcoal-900 leading-tight mb-5">{{ hero_title }}</h1>
+      <p class="text-base md:text-xl text-gray-600 leading-relaxed mb-8 max-w-xl">{{ hero_subtitle }}</p>
+      <div class="flex flex-wrap gap-4">
+        <a href="{% url 'inquiries:bulk' %}{% if category %}?category={{ category.name }}{% endif %}"
+           class="inline-flex items-center gap-2 bg-sand-600 text-white font-bold px-8 py-4 rounded-full hover:bg-sand-700 transition-colors shadow-lg">
+          Request Bulk Quote
+        </a>
+        <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-green-600 text-white font-semibold px-7 py-4 rounded-full hover:bg-green-700 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp Us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Bar -->
+<div class="bg-charcoal-900 py-8">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      {% for value, label in seo_stats %}
+      <div>
+        <div class="font-serif text-3xl font-bold text-sand-400">{{ value }}</div>
+        <div class="text-xs text-gray-400 uppercase tracking-widest mt-1">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Product Grid from Category -->
+{% if products %}
+<section class="py-12 md:py-20 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-2">Our Range</p>
+        <h2 class="font-serif text-3xl font-bold text-charcoal-900">{% if category %}{{ category.name }} Collection{% else %}Featured Products{% endif %}</h2>
+      </div>
+      {% if category %}
+      <a href="{{ category.get_absolute_url }}" class="text-sm text-sand-600 font-medium hover:text-sand-700 flex items-center gap-1">
+        View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </a>
+      {% endif %}
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+      {% for product in products %}
+      <a href="{{ product.get_absolute_url }}" class="group bg-cream-50 rounded-2xl overflow-hidden border border-cream-200 hover:border-sand-300 hover:shadow-lg transition-all duration-300">
+        <div class="aspect-square bg-gradient-to-br from-cream-100 to-cream-300 overflow-hidden relative">
+          {% if product.primary_image %}
+          <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          {% else %}
+          <div class="w-full h-full flex items-center justify-center"><span class="text-5xl">🏷️</span></div>
+          {% endif %}
+        </div>
+        <div class="p-4">
+          <h3 class="font-semibold text-charcoal-900 text-sm line-clamp-2 group-hover:text-sand-700 transition-colors">{{ product.name }}</h3>
+          <p class="text-xs text-gray-400 mt-1">MOQ: {{ product.moq }} pcs · {{ product.get_usage_display }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Rich Content Block -->
+<section class="py-12 md:py-20 bg-cream-50">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-3 gap-12">
+      <div class="lg:col-span-2">
+        <div class="prose prose-lg max-w-none text-gray-700
+                    prose-headings:font-serif prose-headings:text-charcoal-900
+                    prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4
+                    prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-5 prose-h3:mb-3
+                    prose-table:text-sm prose-th:bg-cream-200 prose-th:p-3 prose-td:p-3 prose-td:border prose-td:border-cream-300
+                    prose-strong:text-charcoal-900">
+          {{ content_html|safe }}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-5">
+        <!-- Inquiry Form Mini -->
+        <div class="bg-sand-600 rounded-2xl p-6 text-white">
+          <h3 class="font-serif text-xl font-bold mb-2">Get a Free Quote</h3>
+          <p class="text-sm text-sand-100 mb-4">Fill in your requirements and receive pricing within 24 hours.</p>
+          <a href="{% url 'inquiries:bulk' %}{% if category %}?category={{ category.name }}{% endif %}"
+             class="block text-center bg-white text-sand-700 font-bold py-3 rounded-xl hover:bg-cream-50 transition-colors">
+            Request Quote →
+          </a>
+        </div>
+
+        <!-- Other SEO Pages -->
+        <div class="bg-white rounded-2xl border border-cream-200 p-5">
+          <h3 class="font-semibold text-charcoal-900 mb-4 text-sm">Related Services</h3>
+          <ul class="space-y-2">
+            <li><a href="/bedsheet-exporter-india/" class="text-sm text-gray-600 hover:text-sand-600 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              Bedsheet Supplier India
+            </a></li>
+            <li><a href="/hotel-towel-supplier/" class="text-sm text-gray-600 hover:text-sand-600 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              Hotel Towel Supplier
+            </a></li>
+            <li><a href="/bulk-comforter-manufacturer/" class="text-sm text-gray-600 hover:text-sand-600 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              Comforter Manufacturer
+            </a></li>
+            <li><a href="/kitchen-towel-supplier/" class="text-sm text-gray-600 hover:text-sand-600 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              Kitchen Towel Supplier
+            </a></li>
+          </ul>
+        </div>
+
+        <!-- Certifications -->
+        <div class="bg-cream-100 rounded-2xl border border-cream-200 p-5">
+          <h3 class="font-semibold text-charcoal-900 mb-3 text-sm">Quality Certifications</h3>
+          <div class="flex flex-wrap gap-2">
+            {% for cert in seo_certs %}
+            <span class="text-xs bg-white border border-cream-300 px-3 py-1.5 rounded-full text-charcoal-800 font-medium">{{ cert }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-10 md:py-14 bg-white">
+  <div class="container mx-auto px-4 lg:px-8 max-w-3xl">
+    <h2 class="font-serif text-3xl font-bold text-charcoal-900 mb-8">Frequently Asked Questions</h2>
+    <div class="space-y-4" id="faq">
+      {% for question, answer in seo_faqs %}
+      <div class="bg-cream-50 border border-cream-200 rounded-xl overflow-hidden">
+        <button class="faq-btn w-full flex items-center justify-between p-5 text-left font-semibold text-charcoal-900 hover:bg-cream-100 transition-colors"
+                onclick="toggleFaq(this)">
+          {{ question }}
+          <svg class="w-5 h-5 text-sand-600 flex-shrink-0 ml-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="faq-answer hidden px-5 pb-5 text-sm text-gray-600 leading-relaxed">{{ answer }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const icon = btn.querySelector('svg');
+  answer.classList.toggle('hidden');
+  icon.style.transform = answer.classList.contains('hidden') ? '' : 'rotate(180deg)';
+}
+</script>
+{% endblock %}

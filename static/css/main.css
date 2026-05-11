@@ -1,0 +1,198 @@
+/* ============================================
+   TriDAV Impex – Main Stylesheet
+   Premium Indian Textile Order Brand
+   ============================================ */
+
+/* ----- Reset & Base ----- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; }
+
+/* ----- Custom Properties ----- */
+:root {
+  --cream-50: #fdfbf7;
+  --cream-100: #f9f3e8;
+  --cream-200: #f0e4c8;
+  --cream-300: #e3ca9f;
+  --sand-600: #a87840;
+  --charcoal-900: #1a1a1a;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ----- Marquee Animation ----- */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ----- Reveal on Scroll ----- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----- Staggered Reveal for Children ----- */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.05s; }
+.reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.15s; }
+.reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.25s; }
+.reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.35s; }
+.reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 0.45s; }
+.reveal-stagger.visible > *:nth-child(n+6) { opacity: 1; transform: none; transition-delay: 0.5s; }
+
+/* ----- Navbar Scroll State ----- */
+#navbar.scrolled {
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+}
+
+/* ----- Image Zoom on Hover ----- */
+.img-zoom-wrap {
+  overflow: hidden;
+  border-radius: 1rem;
+}
+.img-zoom-wrap img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.img-zoom-wrap:hover img {
+  transform: scale(1.07);
+}
+
+/* ----- Product Card Micro-interactions ----- */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12);
+}
+
+/* ----- Skeleton Loader ----- */
+.skeleton {
+  background: linear-gradient(90deg, #f0e4c8 0%, #fdfbf7 50%, #f0e4c8 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ----- Parallax Layer ----- */
+.parallax-bg {
+  will-change: transform;
+  transition: transform 0.1s linear;
+}
+
+/* ----- Smooth Gradient Text ----- */
+.gradient-text {
+  background: linear-gradient(135deg, #a87840 0%, #c49050 50%, #8a6030 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ----- Custom Scrollbar ----- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--cream-100); }
+::-webkit-scrollbar-thumb { background: var(--cream-300); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--sand-600); }
+
+/* ----- Selection Color ----- */
+::selection {
+  background: #f0e4c8;
+  color: #1a1a1a;
+}
+
+/* ----- Focus Ring ----- */
+*:focus-visible {
+  outline: 2px solid #a87840;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ----- Prose Table Overrides ----- */
+.prose table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #f0e4c8;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.prose th {
+  background: #f9f3e8;
+  font-weight: 600;
+  color: #2c2c2c;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid #f0e4c8;
+}
+.prose td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f9f3e8;
+}
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+/* ----- Mobile Responsiveness ----- */
+@media (max-width: 640px) {
+  /* Prevent hero text overflow */
+  .font-serif.leading-\[1\.1\] { line-height: 1.2; }
+
+  /* Prose tables scroll on mobile */
+  .prose table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Quick view modal full width on small screens */
+  #quick-view-modal > div { margin: 1rem; max-width: calc(100vw - 2rem); }
+
+  /* Breadcrumb overflow */
+  nav.flex.items-center { overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+}
+
+/* ----- Print Styles ----- */
+@media print {
+  #navbar, .whatsapp-float, #sticky-cta, footer { display: none !important; }
+  body { font-size: 12pt; color: #000; }
+}
+
+/* ----- Loading State Overlay ----- */
+.page-loading {
+  position: fixed;
+  inset: 0;
+  background: var(--cream-50);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+.page-loading.loaded {
+  opacity: 0;
+  pointer-events: none;
+}
+.loading-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--sand-600);
+  border-radius: 50%;
+  margin: 0 4px;
+  animation: loading-bounce 1.2s ease-in-out infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes loading-bounce {
+  0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
+}

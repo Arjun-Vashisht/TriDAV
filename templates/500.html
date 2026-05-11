@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-32 bg-cream-50 text-center">
+  <div class="container mx-auto px-4">
+    <p class="font-serif text-8xl font-bold text-cream-300 mb-6">500</p>
+    <h1 class="font-serif text-4xl font-bold text-charcoal-900 mb-4">Server Error</h1>
+    <p class="text-gray-500 max-w-md mx-auto mb-8">Something went wrong on our end. Our team has been notified. Please try again in a moment.</p>
+    <a href="{% url 'core:home' %}" class="bg-sand-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-sand-700 transition-colors">Go Home</a>
+  </div>
+</section>
+{% endblock %}

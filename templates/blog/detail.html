@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block schema %}
+{% if schema_article %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ post.title }}",
+  "description": "{{ post.effective_seo_description }}",
+  "image": "{% if post.featured_image %}{{ request.scheme }}://{{ request.get_host }}{{ post.featured_image.url }}{% endif %}",
+  "author": {
+    "@type": "Organization",
+    "name": "TriDAV Impex"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "TriDAV Impex",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/static/images/logo.png"
+    }
+  },
+  "datePublished": "{{ post.published_at|date:'c' }}",
+  "dateModified": "{{ post.updated_at|date:'c' }}"
+}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="bg-cream-100 border-b border-cream-200 py-4">
+  <div class="container mx-auto px-4 lg:px-8 flex items-center gap-2 text-sm text-gray-400">
+    <a href="{% url 'core:home' %}" class="hover:text-sand-600">Home</a>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <a href="{% url 'blog:list' %}" class="hover:text-sand-600">Blog</a>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <span class="text-charcoal-800 line-clamp-1">{{ post.title|truncatechars:50 }}</span>
+  </div>
+</nav>
+
+<article class="py-10 md:py-14 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-3 gap-8 lg:gap-12">
+      <!-- Article Content -->
+      <div class="lg:col-span-2">
+        <!-- Meta -->
+        <div class="flex flex-wrap items-center gap-3 mb-5">
+          {% if post.category %}
+          <span class="bg-sand-100 text-sand-700 text-xs font-bold px-3 py-1 rounded-full">{{ post.category.name }}</span>
+          {% endif %}
+          <span class="text-xs text-gray-400">{{ post.published_at|date:"d F Y" }}</span>
+          <span class="text-xs text-gray-400">·</span>
+          <span class="text-xs text-gray-400">{{ post.read_time }} min read</span>
+          <span class="text-xs text-gray-400">·</span>
+          <span class="text-xs text-gray-400">{{ post.views }} views</span>
+        </div>
+
+        <h1 class="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-charcoal-900 mb-6 leading-snug">{{ post.title }}</h1>
+
+        <p class="text-base md:text-xl text-gray-600 leading-relaxed mb-8 font-light">{{ post.excerpt }}</p>
+
+        <!-- Featured Image -->
+        {% if post.featured_image %}
+        <div class="aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-md">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover" loading="eager" />
+        </div>
+        {% endif %}
+
+        <!-- Article Body -->
+        <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed
+                    prose-headings:font-serif prose-headings:text-charcoal-900
+                    prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-10 prose-h2:mb-4
+                    prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-7 prose-h3:mb-3
+                    prose-p:mb-5 prose-p:leading-relaxed
+                    prose-strong:text-charcoal-900 prose-strong:font-semibold
+                    prose-a:text-sand-600 prose-a:no-underline hover:prose-a:underline
+                    prose-table:text-sm prose-th:bg-cream-100 prose-th:p-3 prose-td:p-3
+                    prose-ul:list-disc prose-ul:pl-5 prose-li:mb-2">
+          {{ post.content_html|safe }}
+        </div>
+
+        <!-- Tags -->
+        {% if post.tags.all %}
+        <div class="mt-10 pt-6 border-t border-cream-200">
+          <p class="text-xs text-gray-400 uppercase tracking-widest mb-3">Tags</p>
+          <div class="flex flex-wrap gap-2">
+            {% for tag in post.tags.all %}
+            <span class="text-xs bg-cream-100 border border-cream-300 px-3 py-1.5 rounded-full text-gray-600">#{{ tag.name }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Share -->
+        <div class="mt-8 flex items-center gap-3">
+          <span class="text-sm text-gray-500 font-medium">Share:</span>
+          <a href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank"
+             class="bg-green-100 text-green-700 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-green-200 transition-colors">WhatsApp</a>
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ post.title|urlencode }}" target="_blank"
+             class="bg-blue-100 text-blue-700 text-xs font-semibold px-4 py-2 rounded-xl hover:bg-blue-200 transition-colors">LinkedIn</a>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <!-- CTA Box -->
+        <div class="bg-sand-600 rounded-2xl p-6 text-white text-center">
+          <div class="text-3xl mb-3">📦</div>
+          <h3 class="font-serif text-xl font-bold mb-2">Ready to Order?</h3>
+          <p class="text-sm text-sand-100 mb-4">Get a custom bulk quote for your textile requirements.</p>
+          <a href="{% url 'inquiries:bulk' %}" class="block bg-white text-sand-700 font-semibold py-3 rounded-xl hover:bg-cream-50 transition-colors text-sm">
+            Request Bulk Quote
+          </a>
+        </div>
+
+        <!-- Related Posts -->
+        {% if related %}
+        <div>
+          <h3 class="font-semibold text-charcoal-900 mb-4">Related Articles</h3>
+          <div class="space-y-4">
+            {% for rp in related %}
+            <a href="{{ rp.get_absolute_url }}" class="group flex items-start gap-3 hover:bg-cream-50 p-3 -mx-3 rounded-xl transition-colors">
+              <div class="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-cream-200">
+                {% if rp.featured_image %}
+                <img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}" class="w-full h-full object-cover" loading="lazy" />
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-xl">📝</div>
+                {% endif %}
+              </div>
+              <div>
+                <h4 class="text-sm font-medium text-charcoal-900 line-clamp-2 group-hover:text-sand-700 transition-colors">{{ rp.title }}</h4>
+                <p class="text-xs text-gray-400 mt-1">{{ rp.read_time }} min read</p>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Categories -->
+        <div class="bg-cream-50 rounded-2xl border border-cream-200 p-5">
+          <h3 class="font-semibold text-charcoal-900 mb-3 text-sm uppercase tracking-widest">Product Categories</h3>
+          <ul class="space-y-2">
+            {% for cat in nav_categories %}
+            <li><a href="{{ cat.get_absolute_url }}" class="text-sm text-gray-600 hover:text-sand-600 transition-colors flex items-center gap-2">
+              <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              {{ cat.name }}
+            </a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</article>
+{% endblock %}

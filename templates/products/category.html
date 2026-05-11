@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Breadcrumb + Header -->
+<section class="bg-cream-100 py-8 md:py-14 border-b border-cream-200">
+  <div class="container mx-auto px-4 lg:px-8">
+    <nav class="flex items-center gap-2 text-sm text-gray-400 mb-5">
+      <a href="{% url 'core:home' %}" class="hover:text-sand-600 transition-colors">Home</a>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <span class="text-charcoal-800 truncate">{{ category.name }}</span>
+    </nav>
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 lg:gap-6">
+      <div>
+        <h1 class="font-serif text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-charcoal-900 mb-3">{{ category.name }}</h1>
+        {% if category.description %}
+        <p class="text-gray-500 max-w-xl leading-relaxed">{{ category.description }}</p>
+        {% endif %}
+      </div>
+      <a href="{% url 'inquiries:bulk' %}?category={{ category.name }}"
+         class="inline-flex items-center gap-2 bg-sand-600 text-white font-semibold px-7 py-3.5 rounded-full hover:bg-sand-700 transition-colors flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Bulk Inquiry
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="py-8 md:py-12 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+
+    <!-- Mobile Filter Toggle -->
+    <div class="lg:hidden mb-4">
+      <button id="mobile-filter-btn"
+              class="flex items-center gap-2 bg-cream-50 border border-cream-200 text-charcoal-900 text-sm font-semibold px-4 py-2.5 rounded-xl hover:border-sand-400 transition-colors">
+        <svg class="w-4 h-4 text-sand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        <span id="filter-btn-text">Show Filters</span>
+      </button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8">
+
+      <!-- Sidebar Filters -->
+      <aside class="lg:w-64 flex-shrink-0 hidden lg:block" id="filter-sidebar">
+        <div class="bg-cream-50 rounded-2xl border border-cream-200 p-6 sticky top-28">
+          <h3 class="font-semibold text-charcoal-900 text-sm uppercase tracking-widest mb-5">Filters</h3>
+          <form id="filter-form" method="get">
+
+            <!-- Material Filter -->
+            {% if materials %}
+            <div class="mb-6">
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Material</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="material" value="" class="accent-sand-600"
+                         {% if not active_filters.material %}checked{% endif %}
+                         onchange="document.getElementById('filter-form').submit()" />
+                  <span class="text-sm text-charcoal-800">All Materials</span>
+                </label>
+                {% for material in materials %}
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="material" value="{{ material.slug }}" class="accent-sand-600"
+                         {% if active_filters.material == material.slug %}checked{% endif %}
+                         onchange="document.getElementById('filter-form').submit()" />
+                  <span class="text-sm text-charcoal-800">{{ material.name }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Usage Filter -->
+            {% if usage_choices %}
+            <div class="mb-6">
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Usage</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="usage" value="" class="accent-sand-600"
+                         {% if not active_filters.usage %}checked{% endif %}
+                         onchange="document.getElementById('filter-form').submit()" />
+                  <span class="text-sm text-charcoal-800">All Uses</span>
+                </label>
+                {% for value, label in usage_choices %}
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="usage" value="{{ value }}" class="accent-sand-600"
+                         {% if active_filters.usage == value %}checked{% endif %}
+                         onchange="document.getElementById('filter-form').submit()" />
+                  <span class="text-sm text-charcoal-800">{{ label }}</span>
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Sort -->
+            <div>
+              <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-3">Sort By</label>
+              <select name="sort" class="w-full text-sm bg-white border border-cream-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-sand-400" onchange="this.form.submit()">
+                <option value="-created_at" {% if active_filters.sort == "-created_at" %}selected{% endif %}>Newest First</option>
+                <option value="name" {% if active_filters.sort == "name" %}selected{% endif %}>Name A–Z</option>
+                <option value="-is_featured" {% if active_filters.sort == "-is_featured" %}selected{% endif %}>Featured First</option>
+              </select>
+            </div>
+
+            <!-- Clear Filters -->
+            {% if active_filters.material or active_filters.usage %}
+            <a href="{{ request.path }}" class="mt-4 block text-sm text-red-500 hover:text-red-600 font-medium text-center">
+              Clear All Filters
+            </a>
+            {% endif %}
+          </form>
+        </div>
+      </aside>
+
+      <!-- Product Grid -->
+      <div class="flex-1">
+        <!-- Results count -->
+        <div class="flex items-center justify-between mb-6">
+          <p class="text-sm text-gray-500">{{ products.paginator.count }} product{{ products.paginator.count|pluralize }} found</p>
+        </div>
+
+        {% if products %}
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-5">
+          {% for product in products %}
+          <div class="group bg-cream-50 rounded-2xl overflow-hidden border border-cream-200 hover:border-sand-300 hover:shadow-lg transition-all duration-300">
+            <!-- Image -->
+            <div class="relative aspect-square bg-gradient-to-br from-cream-100 to-cream-300 overflow-hidden">
+              {% if product.primary_image %}
+              <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              {% else %}
+              <div class="w-full h-full flex items-center justify-center">
+                <span class="text-4xl">🏷️</span>
+              </div>
+              {% endif %}
+              <div class="absolute top-2 left-2 flex flex-col gap-1">
+                {% if product.is_bestseller %}<span class="bg-sand-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">Best Seller</span>{% endif %}
+                {% if product.is_new %}<span class="bg-green-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>{% endif %}
+              </div>
+              <!-- Quick View on hover -->
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
+                <button onclick="quickView('{{ product.slug }}')"
+                        class="bg-white text-charcoal-900 text-xs font-semibold px-4 py-2 rounded-full shadow-md">Quick View</button>
+              </div>
+            </div>
+            <div class="p-4">
+              <p class="text-xs text-sand-600 font-medium uppercase tracking-wide mb-1">{{ product.get_usage_display }}</p>
+              <h3 class="font-semibold text-charcoal-900 text-sm leading-snug mb-2 line-clamp-2">{{ product.name }}</h3>
+              {% if product.material %}<p class="text-xs text-gray-400 mb-1">{{ product.material }}</p>{% endif %}
+              {% if product.gsm %}<p class="text-xs text-gray-400 mb-2">{{ product.gsm }} GSM</p>{% endif %}
+              <div class="flex items-center justify-between mt-2">
+                <span class="text-xs text-gray-400">MOQ: {{ product.moq }} pcs</span>
+                <a href="{{ product.get_absolute_url }}" class="text-xs bg-sand-600 text-white px-3 py-1.5 rounded-lg hover:bg-sand-700 transition-colors font-medium">Details</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+        <div class="mt-10 flex justify-center gap-2">
+          {% if products.has_previous %}
+          <a href="?page={{ products.previous_page_number }}&material={{ active_filters.material }}&usage={{ active_filters.usage }}&sort={{ active_filters.sort }}"
+             class="px-4 py-2 bg-white border border-cream-300 text-sm rounded-xl hover:border-sand-400 transition-colors">← Prev</a>
+          {% endif %}
+          {% for num in products.paginator.page_range %}
+          <a href="?page={{ num }}&material={{ active_filters.material }}&usage={{ active_filters.usage }}&sort={{ active_filters.sort }}"
+             class="px-4 py-2 text-sm rounded-xl transition-colors {% if products.number == num %}bg-sand-600 text-white{% else %}bg-white border border-cream-300 hover:border-sand-400{% endif %}">{{ num }}</a>
+          {% endfor %}
+          {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}&material={{ active_filters.material }}&usage={{ active_filters.usage }}&sort={{ active_filters.sort }}"
+             class="px-4 py-2 bg-white border border-cream-300 text-sm rounded-xl hover:border-sand-400 transition-colors">Next →</a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-20">
+          <span class="text-5xl block mb-4">🔍</span>
+          <p class="text-gray-500 text-lg">No products found for this filter.</p>
+          <a href="{{ request.path }}" class="mt-4 inline-block text-sand-600 font-medium hover:text-sand-700">Clear filters</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bulk CTA -->
+<section class="py-14 bg-cream-100">
+  <div class="container mx-auto px-4 lg:px-8 text-center">
+    <h2 class="font-serif text-3xl font-bold text-charcoal-900 mb-3">Need Custom Specifications?</h2>
+    <p class="text-gray-500 mb-6 max-w-md mx-auto">Thread count, GSM, custom size, private label — we customize everything for your bulk order.</p>
+    <a href="{% url 'inquiries:bulk' %}?category={{ category.name }}" class="inline-flex items-center gap-2 bg-sand-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-sand-700 transition-colors">
+      Request Custom Quote
+    </a>
+  </div>
+</section>
+
+<!-- Quick View Modal -->
+<div id="quick-view-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-charcoal-900/60 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-5 sm:p-8 relative">
+    <button onclick="closeQuickView()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-charcoal-900">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div id="quick-view-content"></div>
+  </div>
+</div>
+
+{% endblock %}

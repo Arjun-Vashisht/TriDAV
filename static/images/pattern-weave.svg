@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+  <pattern id="weave" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+    <rect x="0" y="0" width="10" height="2" fill="#c49050" opacity="0.3"/>
+    <rect x="10" y="10" width="10" height="2" fill="#c49050" opacity="0.3"/>
+    <rect x="0" y="0" width="2" height="10" fill="#a87840" opacity="0.2"/>
+    <rect x="10" y="10" width="2" height="10" fill="#a87840" opacity="0.2"/>
+  </pattern>
+  <rect width="60" height="60" fill="url(#weave)"/>
+</svg>

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="py-32 bg-cream-50 text-center">
+  <div class="container mx-auto px-4">
+    <p class="font-serif text-8xl font-bold text-cream-300 mb-6">404</p>
+    <h1 class="font-serif text-4xl font-bold text-charcoal-900 mb-4">Page Not Found</h1>
+    <p class="text-gray-500 max-w-md mx-auto mb-8">The page you're looking for doesn't exist or has been moved. Let's get you back on track.</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="{% url 'core:home' %}" class="bg-sand-600 text-white font-semibold px-8 py-4 rounded-full hover:bg-sand-700 transition-colors">Go Home</a>
+      <a href="{% url 'inquiries:bulk' %}" class="bg-white border border-cream-300 text-charcoal-900 font-semibold px-8 py-4 rounded-full hover:border-sand-400 transition-colors">Get a Quote</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

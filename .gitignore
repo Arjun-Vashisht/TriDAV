@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Media uploads (use R2 in production; keep seed images via git)
+# Uncomment the next line if you do NOT want to commit media to git:
+# media/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/

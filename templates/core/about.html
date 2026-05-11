@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Hero -->
+<section class="py-14 md:py-24 bg-cream-100 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-20" style="background-image: url('{% static "images/pattern-weave.svg" %}'); background-size: 200px;"></div>
+  <div class="container mx-auto px-4 lg:px-8 relative z-10 text-center">
+    <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-4">About Us</p>
+    <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-charcoal-900 mb-5">Quality Products,<br /><span class="text-sand-600 italic">Order-Ready.</span></h1>
+    <p class="text-base md:text-xl text-gray-500 max-w-2xl mx-auto leading-relaxed">TriDAV Impex is a dedicated supplier of home textiles and hygiene products for international buyers, distributors, and institutional clients.</p>
+  </div>
+</section>
+
+{% if stats %}
+<!-- Stats -->
+<section class="py-10 bg-charcoal-900">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      {% for value, label in stats %}
+      <div>
+        <div class="font-serif text-4xl font-bold text-sand-400">{{ value }}</div>
+        <div class="text-xs text-gray-400 uppercase tracking-widest mt-1">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Story Section -->
+<section class="py-14 md:py-24 bg-white">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-12 md:mb-20">
+      <div class="reveal">
+        <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Who We Are</p>
+        <h2 class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-charcoal-900 mb-6">A Focused Supplier for International Markets</h2>
+        <p class="text-gray-600 leading-relaxed mb-5">TriDAV Impex supplies home textiles and hygiene paper products to international buyers. Our product range covers bedsheets, comforters, towels, doormats, toilet paper, kitchen rolls, tissue papers, and pocket tissues.</p>
+        <p class="text-gray-600 leading-relaxed mb-5">We work with manufacturers and suppliers to source products that meet defined quality specifications. Our focus is on consistent quality, reliable packaging, and straightforward order processes that make procurement simple for domestic and overseas buyers.</p>
+        <p class="text-gray-600 leading-relaxed">All products are packaged for safe transit and come with standard order documentation. Custom branding and private label options are available on selected product categories.</p>
+      </div>
+      <div class="reveal">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="h-56 bg-gradient-to-br from-cream-200 to-sand-200 rounded-2xl flex items-center justify-center shadow-md"><span class="text-6xl">🏭</span></div>
+          <div class="h-56 bg-gradient-to-br from-sand-100 to-cream-300 rounded-2xl flex items-center justify-center shadow-md mt-6"><span class="text-6xl">🧵</span></div>
+          <div class="h-48 bg-gradient-to-br from-cream-300 to-sand-100 rounded-2xl flex items-center justify-center shadow-md"><span class="text-6xl">✂️</span></div>
+          <div class="h-48 bg-gradient-to-br from-sand-200 to-cream-200 rounded-2xl flex items-center justify-center shadow-md mt-6"><span class="text-6xl">📦</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Production Process -->
+    <div class="reveal">
+      <div class="text-center mb-12">
+        <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">How We Work</p>
+        <h2 class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-charcoal-900">Our Production Process</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for num, title, desc in process_steps %}
+        <div class="bg-cream-50 rounded-2xl border border-cream-200 p-6 hover:shadow-md transition-shadow">
+          <div class="w-10 h-10 bg-sand-600 text-white rounded-xl flex items-center justify-center font-bold text-lg mb-4">{{ num }}</div>
+          <h3 class="font-semibold text-charcoal-900 mb-2">{{ title }}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">{{ desc }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Founders -->
+<section class="py-14 md:py-20 bg-cream-50">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="text-center mb-12 reveal">
+      <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">The People Behind It</p>
+      <h2 class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-charcoal-900">Our Founders</h2>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto reveal">
+      {% for name, initials in founders %}
+      <div class="bg-white rounded-2xl border border-cream-200 p-6 text-center hover:shadow-md transition-shadow">
+        <div class="w-16 h-16 bg-sand-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-white font-serif font-bold text-xl">{{ initials }}</span>
+        </div>
+        <h3 class="font-semibold text-charcoal-900">{{ name }}</h3>
+        <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest">Co-Founder</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Quality Control -->
+<section class="py-14 md:py-24 bg-cream-100">
+  <div class="container mx-auto px-4 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <div class="reveal">
+        <p class="text-sand-600 text-xs font-semibold uppercase tracking-widest mb-3">Quality Assurance</p>
+        <h2 class="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-charcoal-900 mb-6">Consistent Quality, Every Order</h2>
+        <p class="text-gray-600 leading-relaxed mb-8">Products are checked against defined specifications before dispatch. We conduct standard pre-shipment checks to verify dimensions, weight, packaging condition, and labelling accuracy.</p>
+        <div class="space-y-4">
+          {% for test in quality_tests %}
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <span class="text-sm text-charcoal-800">{{ test }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="reveal space-y-4">
+        <h3 class="font-semibold text-charcoal-900 text-lg mb-6">Our Quality Commitments</h3>
+        {% if certifications %}
+        {% for cert in certifications %}
+        <div class="flex items-center gap-4 bg-white rounded-xl border border-cream-200 p-4 hover:shadow-sm transition-shadow">
+          <div class="w-12 h-12 bg-cream-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-sand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-charcoal-900 text-sm">{{ cert.name }}</div>
+            {% if cert.description %}<div class="text-xs text-gray-500 mt-0.5">{{ cert.description }}</div>{% endif %}
+          </div>
+          <svg class="w-5 h-5 text-green-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        </div>
+        {% endfor %}
+        {% else %}
+        {% for name, desc in default_certifications %}
+        <div class="flex items-center gap-4 bg-white rounded-xl border border-cream-200 p-4 hover:shadow-sm transition-shadow">
+          <div class="w-12 h-12 bg-sand-50 border border-sand-200 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-sand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-charcoal-900 text-sm">{{ name }}</div>
+            <div class="text-xs text-gray-500 mt-0.5">{{ desc }}</div>
+          </div>
+          <svg class="w-5 h-5 text-green-500 ml-auto flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-10 md:py-16 bg-sand-600">
+  <div class="container mx-auto px-4 lg:px-8 text-center">
+    <h2 class="font-serif text-2xl md:text-3xl font-bold text-white mb-4">Partner with TriDAV Impex</h2>
+    <p class="text-sand-100 mb-8 max-w-lg mx-auto">We supply quality home textiles and hygiene products to international buyers. Get in touch to discuss your requirements.</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="{% url 'inquiries:bulk' %}" class="bg-white text-sand-700 font-bold px-8 py-4 rounded-full hover:bg-cream-50 transition-colors">Get a Quote</a>
+      <a href="{% url 'core:contact' %}" class="border-2 border-white text-white font-semibold px-8 py-4 rounded-full hover:bg-white/10 transition-colors">Contact Us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
