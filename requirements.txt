@@ -1,9 +1,5 @@
 Django==5.0.6
 Pillow==10.3.0
-django-meta==2.4.1
-django-sitemap-ping==1.0.0
-django-compressor==4.4
-django-imagekit==5.0.0
 django-crispy-forms==2.1
 crispy-tailwind==1.0.3
 django-taggit==5.0.1
@@ -11,7 +7,6 @@ django-filter==24.2
 psycopg2-binary==2.9.9
 python-decouple==3.8
 whitenoise==6.6.0
-django-cors-headers==4.3.1
 Markdown==3.6
 django-extensions==3.2.3
 gunicorn==22.0.0
