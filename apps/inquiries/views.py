@@ -8,6 +8,8 @@ from .models import BulkInquiry
 
 def bulk_inquiry(request):
     if request.method == 'POST':
+        if request.POST.get('hp_contact_field'):
+            return redirect('inquiries:success')
         form = BulkInquiryForm(request.POST)
         if form.is_valid():
             inquiry = form.save(commit=False)
@@ -40,6 +42,8 @@ def bulk_inquiry(request):
 
 def contact_submit(request):
     if request.method == 'POST':
+        if request.POST.get('hp_contact_field'):
+            return redirect('inquiries:contact_success')
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()

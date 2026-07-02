@@ -54,6 +54,10 @@
         <h2 class="font-serif text-2xl font-bold text-charcoal-900 mb-6">Send a Message</h2>
         <form action="{% url 'inquiries:contact_submit' %}" method="post" class="space-y-5">
           {% csrf_token %}
+          <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <label for="hp_contact_field2">Leave this field empty</label>
+            <input type="text" id="hp_contact_field2" name="hp_contact_field" tabindex="-1" autocomplete="off" />
+          </div>
           <div class="grid sm:grid-cols-2 gap-5">
             <div>
               <label class="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">Full Name *</label>

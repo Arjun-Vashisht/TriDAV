@@ -1,3 +1,8 @@
+# Render's own free Postgres plan auto-deletes after 30 days (+14-day grace
+# period), so it can't back a real production DB. Use a Neon free Postgres
+# project instead (neon.tech — free tier never expires) and paste its
+# connection string into DATABASE_URL below, either here or in the Render
+# dashboard's env var UI (recommended, so the secret isn't committed to git).
 services:
   - type: web
     name: tridav
@@ -10,17 +15,10 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: tridav-db
-          property: connectionString
+        sync: false  # set manually in the Render dashboard to your Neon connection string
       - key: ALLOWED_HOSTS
         value: tridav.onrender.com
       - key: CSRF_TRUSTED_ORIGINS
         value: https://tridav.onrender.com
       - key: PYTHON_VERSION
         value: 3.11.0
-
-databases:
-  - name: tridav-db
-    databaseName: tridav
-    plan: free

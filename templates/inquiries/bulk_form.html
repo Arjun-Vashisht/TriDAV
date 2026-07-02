@@ -20,6 +20,10 @@
       <div class="lg:col-span-2">
         <form action="{% url 'inquiries:bulk' %}" method="post" class="space-y-6">
           {% csrf_token %}
+          <div style="position:absolute;left:-9999px;" aria-hidden="true">
+            <label for="hp_contact_field">Leave this field empty</label>
+            <input type="text" id="hp_contact_field" name="hp_contact_field" tabindex="-1" autocomplete="off" />
+          </div>
           <div>
             <h3 class="font-semibold text-charcoal-900 text-lg mb-4 pb-2 border-b border-cream-200">Contact Information</h3>
             <div class="grid sm:grid-cols-2 gap-5">
